@@ -1,17 +1,17 @@
 # 학생 리스트 [[이름, 점수], ... ]
 studentInfo_list = []
 # 초기 학생 정보 추가
-studentInfo_list.append(("alice", 100))
-studentInfo_list.append(("bob", 90))
-studentInfo_list.append(("carol", 80))
-studentInfo_list.append(("홍길동", 70))
-studentInfo_list.append(("강감찬", 60))    
+studentInfo_list.append(["alice", 100])
+studentInfo_list.append(["bob", 90])
+studentInfo_list.append(["carol", 80])
+studentInfo_list.append(["홍길동", 70])
+studentInfo_list.append(["강감찬", 60])    
 
 # 학생 추가
 def add_student(name, score):
     try:
         score = int(score)
-        studentInfo_list.append((name, score))
+        studentInfo_list.append([name, score])
         print(f"학생 정보가 추가되었습니다. 이름 : {name}, 점수: {score}")
     except:
         print("올바른 숫자를 입력해주세요.")
@@ -34,17 +34,13 @@ def remove_student(name):
 
 # 성적 수정  튜플 <-> 리스트
 def modify_score(name):
-    temp_list = list(studentInfo_list)
-    
-    for i in range(len(temp_list)):
-        if temp_list[i][0] == name: 
-            print(f"이름 : {name}, 현재 점수 : {temp_list[i][1]}")
+    for i in range(len(studentInfo_list)):
+        if studentInfo_list[i][0] == name: 
+            print(f"이름 : {name}, 현재 점수 : {studentInfo_list[i][1]}")
             try:
                 input_score = int(input("수정할 점수를 입력하세요: "))
-                temp_list[i] = list(temp_list[i])
-                temp_list[i][1] = input_score 
-                #다시 스튜던트 리스트로로
-                studentInfo_list = tuple(temp_list)
+                studentInfo_list[i][1] = input_score 
+
                 print(f"학생 정보가 수정되었습니다. 이름 : {name}, 점수: {studentInfo_list[i][1]}")
             except ValueError:
                 print("올바른 숫자를 입력해주세요.")
@@ -61,7 +57,7 @@ def show_all_student_info():
         return
     
     print("= 학생 정보 =")
-    for i, (name, score) in enumerate(studentInfo_list , 1):
+    for i, [name, score] in enumerate(studentInfo_list , 1):
         print(f"{i}번째 학생 정보 - 이름 : {name}, 점수: {score}")
         
 
