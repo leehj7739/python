@@ -32,7 +32,7 @@ def remove_student(name):
         
     print(f"학생 정보가 존재하지 않습니다. 이름 : {name}")
 
-# 성적 수정  튜플 <-> 리스트
+# 성적 수정 
 def modify_score(name):
     for i in range(len(studentInfo_list)):
         if studentInfo_list[i][0] == name: 
