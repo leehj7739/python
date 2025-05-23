@@ -23,42 +23,18 @@ def filter_logs(loglevel):
             yield line.strip()
 
 
-try:
-    log_level ="ERROR"
-    filter_gen_error = filter_logs(log_level)
-    for _ in range(6):
-        print(next(filter_gen_error))
-except StopIteration:
-    print(f"해당 loglevel : {log_level}에 대한 로그가 없습니다.")
+def log_level_test(loglevel):
+    try:
+        filter_gen = filter_logs(loglevel)
+        for _ in range(10):
+            print(next(filter_gen))
+    except StopIteration:
+        print(f"해당 loglevel : {loglevel}에 대한 로그가 없습니다.")
 
-try:
-    log_level ="WARNING"
-    filter_gen_warning = filter_logs(log_level)
-    for _ in range(6):
-        print(next(filter_gen_warning))
-except StopIteration:
-    print(f"해당 loglevel : {log_level}에 대한 로그가 없습니다.")
+log_level_test("ERROR")
+log_level_test("WARNING")
+log_level_test("DEBUG")
+log_level_test("INFO")
+log_level_test("CRITICAL")
 
-try:
-    log_level ="DEBUG"
-    filter_gen_debug = filter_logs(log_level)
-    for _ in range(6):
-        print(next(filter_gen_debug))
-except StopIteration:
-    print(f"해당 loglevel : {log_level}에 대한 로그가 없습니다.")
     
-try:
-    log_level ="INFO"
-    filter_gen_info = filter_logs(log_level)
-    for _ in range(6):
-        print(next(filter_gen_info))
-except StopIteration:
-    print(f"해당 loglevel : {log_level}에 대한 로그가 없습니다.")   
-    
-try:
-    log_level ="CRITICAL"
-    filter_gen_critical = filter_logs(log_level)
-    for _ in range(6):
-        print(next(filter_gen_critical))
-except StopIteration:
-    print(f"해당 loglevel : {log_level}에 대한 로그가 없습니다.")
