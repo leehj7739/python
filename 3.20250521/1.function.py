@@ -47,9 +47,21 @@ print(f"필터링된 학생들 : {filtered_students_dict}")
 # • 필터링된 학생들의 평균 나이 계산
 @time_decorator
 def calculate_average_age(filtered_students):
-    age_sum = reduce(lambda x , y : x + y , [int(i[2]) for i in filtered_students.values()])
-    average_age = age_sum / len(filtered_students)
+    # age_sum = reduce(lambda x , y : x + y , [int(i[2]) for i in filtered_students.values()])
+    # average_age = age_sum / len(filtered_students)
+    
+    # 피드백 내용 반영
+    # 리스트 컴프리헨션 사용 및  sum 함수 이용하여 코드 간결화
+    total_age = sum(int(info[2]) for info in filtered_students.values())
+    average_age = total_age / len(filtered_students)
+    
     return average_age
+
+
+
+
+    
+
 
 print(f"평균 나이 : {calculate_average_age(filtered_students_dict)}")
 

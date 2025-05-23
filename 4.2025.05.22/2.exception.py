@@ -19,107 +19,188 @@ logging.basicConfig(
     encoding='utf-8'   
 )
 
-# 사용자 정의 예외
-class FileNotFoundError(Exception):
+# 사용자 정의 예외 # 이름에 custom 추가
+class FileNotFoundCustomError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
 
-class FileFormatError(Exception):
+class FileFormatCustomError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
 
-# 파일 읽기
-def read_file(file_fullname):
-    #읽을 파일 경로 설정
-    source_file_path = os.path.join(os.getcwd(),  "source_files", file_fullname)
+# 피드백 반영
+# 파일 핸들러 맵핑 사용 , 함수형 프로그래밍
 
-    #파일 존재 확인
-    if not os.path.exists(source_file_path):
-        logging.error(f"파일을 찾을 수 없습니다: {source_file_path}")
-        raise FileNotFoundError(f"파일을 찾을 수 없습니다: {source_file_path}")
-
-
-    #파일 판별  -> 텍스트, csv, json, 바이너리 등
-    file_name, file_extension = os.path.splitext(source_file_path)
-    print(f"파일 이름 : {file_name} , 파일 형식 : {file_extension}")
-
-
-    # 텍스트 .txt 파일 읽기
-    def read_txt_file(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                return file.read()
-        except PermissionError as e:
-            logging.error(f"텍스트 파일 읽기 권한 오류: {e}")
-        except Exception as e:
-            logging.error(f"텍스트 파일 읽기 오류: {e}")
-
-        
-    # CSV 파일 읽기
-    def read_csv_file(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                reader = csv.reader(file)
-                return list(reader)
-        except PermissionError as e:
-            logging.error(f"CSV 파일 읽기 권한 오류: {e}")
-        except Exception as e:
-            logging.error(f"CSV 파일 읽기 오류: {e}")
-            
-    # JSON 파일 읽기
-    def read_json_file(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                return json.load(file)
-        except PermissionError as e:
-            logging.error(f"JSON 파일 읽기 권한 오류: {e}")
-        except Exception as e:
-            logging.error(f"JSON 파일 읽기 오류: {e}")
-        
-    # 바이너리 파일 읽기
-    def read_binary_file(file_path):
-        try:
-            with open(file_path, "rb") as file:
-                return file.read()
-        except PermissionError as e:
-            logging.error(f"바이너리 파일 읽기 권한 오류: {e}")
-        except Exception as e:
-            logging.error(f"바이너리 파일 읽기 오류: {e}")
-
-
-    #파일 형식 확인
+# 텍스트 .txt 파일 읽기
+def read_txt_file(file_path):
     try:
-        if file_extension == ".txt":
-            read_file = read_txt_file(source_file_path)
-            print(read_file)
-            return read_file , file_extension
-            
-        elif file_extension == ".csv":
-            read_file = read_csv_file(source_file_path)
-            print(read_file)
-            return read_file , file_extension
-        
-        elif file_extension == ".json":
-            read_file = read_json_file(source_file_path)
-            print(read_file)
-            return read_file , file_extension
-        #바이너리 파일
-        elif file_extension == ".jpg":
-            read_file = read_binary_file(source_file_path)
-            print(read_file)
-            return read_file , file_extension
-        else:
-            logging.error(f"파일 형식 오류: {file_extension}")
-            raise FileFormatError(f"지원하지 않는 파일 형식입니다: {file_extension}")
-        
-    except FileFormatError as e:
-        return None,None
-    
+        with open(file_path, "r", encoding="utf-8") as file:
+            return file.read()
+    except PermissionError as e:
+        logging.error(f"텍스트 파일 읽기 권한 오류: {e}")
     except Exception as e:
-        logging.error(f"파일 읽기 중 오류 발생: {e}")
-        return False
+        logging.error(f"텍스트 파일 읽기 오류: {e}")
+
+    
+# CSV 파일 읽기
+def read_csv_file(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            reader = csv.reader(file)
+            return list(reader)
+    except PermissionError as e:
+        logging.error(f"CSV 파일 읽기 권한 오류: {e}")
+    except Exception as e:
+        logging.error(f"CSV 파일 읽기 오류: {e}")
+        
+# JSON 파일 읽기
+def read_json_file(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except PermissionError as e:
+        logging.error(f"JSON 파일 읽기 권한 오류: {e}")
+    except Exception as e:
+        logging.error(f"JSON 파일 읽기 오류: {e}")
+    
+# 바이너리 파일 읽기
+def read_binary_file(file_path):
+    try:
+        with open(file_path, "rb") as file:
+            return file.read()
+    except PermissionError as e:
+        logging.error(f"바이너리 파일 읽기 권한 오류: {e}")
+    except Exception as e:
+        logging.error(f"바이너리 파일 읽기 오류: {e}")
+
+
+# 파일 핸들러로 함수 맵핑
+# 일단 read만 맵핑
+FILE_HANDLERS = {
+       ".txt": {"read": read_txt_file},
+       ".csv": {"read": read_csv_file},
+       ".json": {"read": read_json_file},
+       ".jpg": {"read": read_binary_file}
+   }
+
+
+# FILE_HANDLERS = {
+#        ".txt": {"read": read_txt_file, "write": write_txt_file},
+#        ".csv": {"read": read_csv_file, "write": write_csv_file},
+#        ".json": {"read": read_json_file, "write": write_json_file},
+#        ".jpg": {"read": read_binary_file, "write": write_binary_file}
+#    }
+
+
+
+def get_filepath(filename):
+    return os.path.join(os.getcwd(), "source_files", filename)
+
+def read_file(filename):
+    file_path = get_filepath(filename)
+    _ , ext = os.path.splitext(filename)
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundCustomError(f"파일을 찾을 수 없습니다: {file_path}")
+
+    if ext not in FILE_HANDLERS:
+        raise FileFormatCustomError(f"지원하지 않는 파일 형식입니다: {ext}")
+
+    return FILE_HANDLERS[ext]["read"](file_path), ext
+   
+
+# # 파일 읽기
+# def read_file(file_fullname):
+#     #읽을 파일 경로 설정
+#     source_file_path = os.path.join(os.getcwd(),  "source_files", file_fullname)
+
+#     #파일 존재 확인
+#     if not os.path.exists(source_file_path):
+#         logging.error(f"파일을 찾을 수 없습니다: {source_file_path}")
+#         raise FileNotFoundError(f"파일을 찾을 수 없습니다: {source_file_path}")
+
+
+#     #파일 판별  -> 텍스트, csv, json, 바이너리 등
+#     file_name, file_extension = os.path.splitext(source_file_path)
+#     print(f"파일 이름 : {file_name} , 파일 형식 : {file_extension}")
+
+
+#     # 텍스트 .txt 파일 읽기
+#     def read_txt_file(file_path):
+#         try:
+#             with open(file_path, "r", encoding="utf-8") as file:
+#                 return file.read()
+#         except PermissionError as e:
+#             logging.error(f"텍스트 파일 읽기 권한 오류: {e}")
+#         except Exception as e:
+#             logging.error(f"텍스트 파일 읽기 오류: {e}")
+
+        
+#     # CSV 파일 읽기
+#     def read_csv_file(file_path):
+#         try:
+#             with open(file_path, "r", encoding="utf-8") as file:
+#                 reader = csv.reader(file)
+#                 return list(reader)
+#         except PermissionError as e:
+#             logging.error(f"CSV 파일 읽기 권한 오류: {e}")
+#         except Exception as e:
+#             logging.error(f"CSV 파일 읽기 오류: {e}")
+            
+#     # JSON 파일 읽기
+#     def read_json_file(file_path):
+#         try:
+#             with open(file_path, "r", encoding="utf-8") as file:
+#                 return json.load(file)
+#         except PermissionError as e:
+#             logging.error(f"JSON 파일 읽기 권한 오류: {e}")
+#         except Exception as e:
+#             logging.error(f"JSON 파일 읽기 오류: {e}")
+        
+#     # 바이너리 파일 읽기
+#     def read_binary_file(file_path):
+#         try:
+#             with open(file_path, "rb") as file:
+#                 return file.read()
+#         except PermissionError as e:
+#             logging.error(f"바이너리 파일 읽기 권한 오류: {e}")
+#         except Exception as e:
+#             logging.error(f"바이너리 파일 읽기 오류: {e}")
+
+
+#     #파일 형식 확인
+#     try:
+#         if file_extension == ".txt":
+#             read_file = read_txt_file(source_file_path)
+#             print(read_file)
+#             return read_file , file_extension
+            
+#         elif file_extension == ".csv":
+#             read_file = read_csv_file(source_file_path)
+#             print(read_file)
+#             return read_file , file_extension
+        
+#         elif file_extension == ".json":
+#             read_file = read_json_file(source_file_path)
+#             print(read_file)
+#             return read_file , file_extension
+#         #바이너리 파일
+#         elif file_extension == ".jpg":
+#             read_file = read_binary_file(source_file_path)
+#             print(read_file)
+#             return read_file , file_extension
+#         else:
+#             logging.error(f"파일 형식 오류: {file_extension}")
+#             raise FileFormatError(f"지원하지 않는 파일 형식입니다: {file_extension}")
+        
+#     except FileFormatError as e:
+#         return None,None
+    
+#     except Exception as e:
+#         logging.error(f"파일 읽기 중 오류 발생: {e}")
+#         return False
 
 
 def copy_file(input_file_name, output_file_name):
@@ -161,8 +242,8 @@ def copy_file(input_file_name, output_file_name):
                 print(f"파일 복사 성공: {output_file_path}")
         else:
             logging.error(f"지원하지 않는 파일 형식입니다: {output_file_extension}")
-            raise FileFormatError(f"지원하지 않는 파일 형식입니다: {output_file_extension}")
-    except FileFormatError as e:
+            raise FileFormatCustomError(f"지원하지 않는 파일 형식입니다: {output_file_extension}")
+    except FileFormatCustomError as e:
         pass
     except Exception as e:
         logging.error(f"파일 쓰기 중 오류 발생: {e}")

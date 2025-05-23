@@ -66,27 +66,38 @@ def show_student_stats():
         print("등록된 학생이 없습니다.")
         return
     
-    # 첫번째 학생 점수로 초기화
-    total_score = 0
-    average_score = studentInfo_list[0][1]
-    max_score = studentInfo_list[0][1]
-    min_score = studentInfo_list[0][1]
+    # # 첫번째 학생 점수로 초기화
+    # total_score = 0
+    # average_score = studentInfo_list[0][1]
+    # max_score = studentInfo_list[0][1]
+    # min_score = studentInfo_list[0][1]
     
-    for student in studentInfo_list:
-        total_score += student[1]
-        print(total_score)
-        if student[1] > max_score:
-            max_score = student[1]
-        if student[1] < min_score:
-            min_score = student[1]
+    # for student in studentInfo_list:
+    #     total_score += student[1]
+    #     print(total_score)
+    #     if student[1] > max_score:
+    #         max_score = student[1]
+    #     if student[1] < min_score:
+    #         min_score = student[1]
         
-    average_score = total_score / len(studentInfo_list)
+    # average_score = total_score / len(studentInfo_list)
+    
+    # print("= 학생 통계 =")
+    # print(f"학생 숫자 : {len(studentInfo_list)}")
+    # print(f"평균 : {average_score}")
+    # print(f"최고점 : {max_score}")
+    # print(f"최저점 : {min_score}")
+    
+    #피드백 내용 적용
+    #리스트 컴프리헨션 사용 및 함수 이용하여 코드 간결화
+    scores = [student[1] for student in studentInfo_list]
     
     print("= 학생 통계 =")
     print(f"학생 숫자 : {len(studentInfo_list)}")
-    print(f"평균 : {average_score}")
-    print(f"최고점 : {max_score}")
-    print(f"최저점 : {min_score}")
+    print(f"평균 : {sum(scores) / len(scores)}")
+    print(f"최고점 : {max(scores)}")
+    print(f"최저점 : {min(scores)}")
+    
     
 
 # 프로그램 시작
