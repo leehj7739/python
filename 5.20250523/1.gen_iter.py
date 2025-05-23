@@ -6,9 +6,11 @@ import os
 #로그파일 읽기
 
 def read_log_file():
-    file_path = 'log.txt'
+    #현재 파일의 경로
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, "log.txt")
     if os.path.exists(file_path):
-        with open("log.txt", "r", encoding="utf-8") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             for line in file:
                 yield line.strip()
     else:
