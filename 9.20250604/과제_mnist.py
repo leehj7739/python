@@ -144,14 +144,65 @@ def mini_mnist():
             return accuracy_per_class
     
     nn = DigitClassifier()
-    print(f"=========학습전=========")
+    print(f"== 학습 전 ==")
     # nn.predict(X)
     print(f"학습전 정확도 : {nn.accuracy(X, y_onehot) * 100:.2f}%")
     losses =nn.train(X_train, y_train)
-    print(f"=========학습후=========")
+    print(f"== 학습 완료 ==")
     # nn.predict(X)
     print(f"훈련 정확도 : {nn.accuracy(X_train, y_train) * 100:.2f}%")
     print(f"테스트 정확도 : {nn.accuracy(X_test, y_test) * 100:.2f}%")
     print(f"각 숫자별 정확도 : {nn.accuracy_per_class(X_test, y_test)}%")
+    
+    
+    plt.figure(figsize=(12, 8))
+    plt.rc('font', family='Malgun Gothic')
+    # 1. 손실 그래프
+    plt.subplot(2, 2, 1)
+    plt.plot(losses)
+    plt.title("학습 손실 변화")
+    plt.xlabel("반복 횟수")
+    plt.ylabel("손실 cross-entropy")
+    plt.grid(True)
+
+    #2. 가중치 변화 시각화
+    plt.subplot(2, 2, 2)
+    plt.bar(range(len(nn.W1.flatten())), nn.W1.flatten())
+    plt.title("은닉층 가중치(학습후)")
+    plt.xlabel("가중치 인덱스")
+    plt.ylabel("가중치 값")
+    plt.grid(True)
+
+        #3. 예측결과 비교
+    plt.subplot(2, 2, 3)
+    x_pos = np.arange(10)  # 0부터 9까지의 숫자
+
+    #3. 예측결과 비교
+    plt.subplot(2, 2, 3)
+    x_pos = np.arange(10)  # 0부터 9까지의 숫자
+
+    # 각 숫자별 정확도 계산
+    accuracy_dict = nn.accuracy_per_class(X_test, y_test)
+    accuracies = [float(accuracy_dict[i].strip('%')) for i in range(10)]
+
+    plt.bar(x_pos, accuracies, width=0.6)
+    plt.title("각 숫자별 정확도")
+    plt.xlabel("숫자")
+    plt.ylabel("정확도 (%)")
+    plt.xticks(x_pos, np.arange(10))
+    plt.grid(True)
+    plt.ylim(0, 100)  # y축 범위를 0-100%로 설정
+
+    # 각 막대 위에 정확도 값 표시
+    for i, v in enumerate(accuracies):
+        plt.text(i, v + 1, f'{v:.1f}%', ha='center')
+
+    plt.tight_layout()
+    plt.show()
+    
         
 mini_mnist()
+#정확도 상승을 위해 은닉층 크기 조정
+#relu 활성화 함수 사용
+
+
